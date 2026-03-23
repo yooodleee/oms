@@ -7,6 +7,8 @@ import com.sparta.oms.product.repository.ProductRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
+
 @Service
 @RequiredArgsConstructor
 public class ProductService {
@@ -22,5 +24,21 @@ public class ProductService {
                 .build();
 
         return new ProductResponseDto(productRepository.save(product));
+    }
+
+    // 단건 조회
+    public ProductResponseDto getById(Long id) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+
+        return new ProductResponseDto(product);
+    }
+
+    // 목록 조회
+    public List<ProductResponseDto> getAll() {
+        return productRepository.findAll()
+                .stream()
+                .map(ProductResponseDto::new)
+                .toList();
     }
 }

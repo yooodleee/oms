@@ -4,10 +4,9 @@ import com.sparta.oms.product.dto.ProductRequestDto;
 import com.sparta.oms.product.dto.ProductResponseDto;
 import com.sparta.oms.product.service.ProductService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/products")
@@ -20,5 +19,17 @@ public class ProductController {
     @PostMapping
     public ProductResponseDto create(@RequestBody ProductRequestDto productRequestDto) {
         return productService.create(productRequestDto);
+    }
+
+    // 단건 조회
+    @GetMapping("{id}")
+    public ProductResponseDto get(@PathVariable Long id) {
+        return productService.getById(id);
+    }
+
+    // 목록 조회
+    @GetMapping
+    public List<ProductResponseDto> getAll() {
+        return productService.getAll();
     }
 }
