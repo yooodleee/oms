@@ -55,4 +55,9 @@ public class ProductService {
 
         return new ProductResponseDto(productRepository.save(product));
     }
+
+    // 삭제
+    public void delete(Long id) {
+        productRepository.deleteById(id);
+    }
 }

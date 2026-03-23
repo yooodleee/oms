@@ -41,4 +41,10 @@ public class ProductController {
     ) {
         return productService.update(id, productRequestDto);
     }
+
+    // 삭제
+    @DeleteMapping("/{id}")
+    public void delete(@PathVariable Long id) {
+        productService.delete(id);
+    }
 }
