@@ -32,4 +32,13 @@ public class ProductController {
     public List<ProductResponseDto> getAll() {
         return productService.getAll();
     }
+
+    // 수정
+    @PutMapping("/{id}")
+    public ProductResponseDto update(
+            @PathVariable Long id,
+            @RequestBody ProductRequestDto productRequestDto
+    ) {
+        return productService.update(id, productRequestDto);
+    }
 }

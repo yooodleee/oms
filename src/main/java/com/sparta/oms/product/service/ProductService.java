@@ -41,4 +41,18 @@ public class ProductService {
                 .map(ProductResponseDto::new)
                 .toList();
     }
+
+    // 수정
+    public ProductResponseDto update(Long id, ProductRequestDto productRequestDto) {
+        Product product = productRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found"));
+
+        product.update(
+                productRequestDto.getName(),
+                productRequestDto.getPrice(),
+                productRequestDto.getStock()
+        );
+
+        return new ProductResponseDto(productRepository.save(product));
+    }
 }
