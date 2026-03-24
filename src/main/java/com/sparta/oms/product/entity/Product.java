@@ -28,4 +28,12 @@ public class Product {
         this.price = price;
         this.stock = stock;
     }
+
+    // 재고 차감
+//    public void decreaseStock(int quantity) {
+//        if (this.stock < quantity) {
+//            throw new IllegalArgumentException("Out of stock");
+//        }
+//        this.stock -= quantity;
+//    }
 }

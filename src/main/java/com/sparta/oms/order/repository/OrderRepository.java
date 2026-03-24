@@ -13,4 +13,9 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
             countQuery = "select count(o) from Order o"
     )
     Page<Order> findAllWithProduct(Pageable pageable);
+
+    // 비관적 락(Pessimistic Lock)
+//    @Lock(LockModeType.PESSIMISTIC_WRITE)
+//    @Query("select p from Product p where p.id = :id")
+//    Optional<Product> findByWithLock(Long id);
 }
