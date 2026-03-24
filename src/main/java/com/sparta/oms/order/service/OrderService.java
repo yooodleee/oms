@@ -29,4 +29,13 @@ public class OrderService {
 
         return new OrderResponseDto(orderRepository.save(order));
     }
+
+    // 단건 조회
+    public OrderResponseDto get(Long orderId) {
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found"));
+
+        return new OrderResponseDto(order);
+    }
 }

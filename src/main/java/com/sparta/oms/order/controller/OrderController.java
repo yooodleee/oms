@@ -4,10 +4,7 @@ import com.sparta.oms.order.dto.OrderRequestDto;
 import com.sparta.oms.order.dto.OrderResponseDto;
 import com.sparta.oms.order.service.OrderService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/orders")
@@ -20,5 +17,11 @@ public class OrderController {
     @PostMapping
     public OrderResponseDto create(@RequestBody OrderRequestDto orderRequestDto) {
         return orderService.create(orderRequestDto);
+    }
+
+    // 주문 조회
+    @GetMapping("/{id}")
+    public OrderResponseDto get(@PathVariable Long id) {
+        return orderService.get(id);
     }
 }
