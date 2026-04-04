@@ -23,17 +23,25 @@ public class Product {
     @Column(nullable = false)
     private int stock;
 
+    public static Product create(String name, int price, int stock) {
+        return Product.builder()
+                .name(name)
+                .price(price)
+                .stock(stock)
+                .build();
+    }
+
     public void update(String name, int price, int stock) {
         this.name = name;
         this.price = price;
         this.stock = stock;
     }
 
-    // 재고 차감
-//    public void decreaseStock(int quantity) {
-//        if (this.stock < quantity) {
-//            throw new IllegalArgumentException("Out of stock");
-//        }
-//        this.stock -= quantity;
-//    }
+    // 재고 차감 (도메인 로직: 재고 부족 검증 포함)
+    public void decreaseStock(int quantity) {
+        if (this.stock < quantity) {
+            throw new IllegalArgumentException("재고가 부족합니다.");
+        }
+        this.stock -= quantity;
+    }
 }

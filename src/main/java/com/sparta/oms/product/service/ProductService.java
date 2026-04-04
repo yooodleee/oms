@@ -17,11 +17,11 @@ public class ProductService {
 
     // 상품 생성
     public ProductResponseDto create(ProductRequestDto productRequestDto) {
-        Product product = Product.builder()
-                .name(productRequestDto.getName())
-                .price(productRequestDto.getPrice())
-                .stock(productRequestDto.getStock())
-                .build();
+        Product product = Product.create(
+                productRequestDto.getName(),
+                productRequestDto.getPrice(),
+                productRequestDto.getStock()
+        );
 
         return new ProductResponseDto(productRepository.save(product));
     }

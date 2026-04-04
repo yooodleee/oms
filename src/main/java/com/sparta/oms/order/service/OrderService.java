@@ -33,21 +33,11 @@ public class OrderService {
     @Transactional
     public OrderResponseDto create(OrderRequestDto orderRequestDto) {
 
-        // Atomic Update - 주문 차감
-        int updated = productRepository.decreaseStock(
-                orderRequestDto.getProductId(),
-                orderRequestDto.getQuantity()
-        );
-
-        if (updated == 0) {
-            throw new IllegalArgumentException("Out of stock");
-        }
-
-        Product product = productRepository.findById(orderRequestDto.getProductId())
+        // 비관적 락으로 상품 조회 후, 재고 차감은 엔티티 도메인 로직에 위임
+        Product product = productRepository.findByIdWithLock(orderRequestDto.getProductId())
                 .orElseThrow(() -> new IllegalArgumentException("Product not found"));
 
-        // 비관적 락 - 주문 차감
-//        product.decreaseStock(orderRequestDto.getQuantity());
+        product.decreaseStock(orderRequestDto.getQuantity());
 
         Order order = Order.create(product, orderRequestDto.getQuantity());
 
