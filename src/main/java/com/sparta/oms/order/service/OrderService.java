@@ -49,7 +49,7 @@ public class OrderService {
         // 비관적 락 - 주문 차감
 //        product.decreaseStock(orderRequestDto.getQuantity());
 
-        Order order = Order.create(product);
+        Order order = Order.create(product, orderRequestDto.getQuantity());
 
         return new OrderResponseDto(orderRepository.save(order));
     }

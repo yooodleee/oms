@@ -20,9 +20,17 @@ public class Order {
     @JoinColumn(name = "product_id", nullable = false)
     private Product product;
 
-    public static Order create(Product product) {
+    @Column(nullable = false)
+    private int quantity;
+
+    @Column(nullable = false)
+    private int price;
+
+    public static Order create(Product product, int quantity) {
         return Order.builder()
                 .product(product)
+                .quantity(quantity)
+                .price(product.getPrice())
                 .build();
     }
 }
