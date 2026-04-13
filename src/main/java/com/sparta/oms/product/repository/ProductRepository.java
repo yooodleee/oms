@@ -7,12 +7,17 @@ import org.springframework.data.jpa.repository.Lock;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
-    // 비관적 락 - 재고 차감 시 동시성 제어
+    Optional<Product> findByIdAndDeletedAtIsNull(Long id);
+
+    List<Product> findAllByDeletedAtIsNull();
+
+    // 비관적 락 - 재고 차감 시 동시성 제어 (소프트 삭제된 상품 제외)
     @Lock(LockModeType.PESSIMISTIC_WRITE)
-    @Query("select p from Product p where p.id = :id")
+    @Query("select p from Product p where p.id = :id and p.deletedAt is null")
     Optional<Product> findByIdWithLock(@Param("id") Long id);
 }

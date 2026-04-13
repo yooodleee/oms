@@ -3,6 +3,8 @@ package com.sparta.oms.product.entity;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,6 +25,9 @@ public class Product {
     @Column(nullable = false)
     private int stock;
 
+    @Column
+    private LocalDateTime deletedAt;
+
     public static Product create(String name, int price, int stock) {
         return Product.builder()
                 .name(name)
@@ -35,6 +40,10 @@ public class Product {
         this.name = name;
         this.price = price;
         this.stock = stock;
+    }
+
+    public void softDelete() {
+        this.deletedAt = LocalDateTime.now();
     }
 
     // 재고 차감 (도메인 로직: 재고 부족 검증 포함)
