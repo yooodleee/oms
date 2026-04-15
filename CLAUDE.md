@@ -59,6 +59,40 @@ out_of_scope:        # 이번 작업 범위 밖
 
 **규칙:** CLAUDE.md보다 실제 코드와 테스트 결과가 더 신뢰할 수 있는 진실이다. CLAUDE.md에는 구현 절차가 아닌 목표·제약·검증 기준만 기술한다.
 
+### Principle 3: In-Repository Knowledge System
+
+**선언:** 모든 컨텍스트는 레포지토리 내부에 존재해야 한다. 외부 문서, 대화 기록, 메모리 시스템에 의존하지 않는다. 레포를 클론하면 에이전트가 작동하는 데 필요한 모든 것이 거기 있어야 한다.
+
+**저장소 내 지식 구조:**
+
+```
+oms/
+├── CLAUDE.md                     ← 하네스 원칙 (이 파일)
+├── docs/
+│   ├── adr/                      ← Architecture Decision Records (왜 이렇게 설계했는가)
+│   ├── constraints/              ← 깨면 안 되는 도메인 규칙
+│   └── intents/                  ← 완료된 작업의 intent 기록
+└── .claude/settings.json         ← 훅·퍼미션 (git tracked)
+```
+
+**지식 유형별 위치:**
+
+| 지식 유형 | 저장 위치 |
+|---|---|
+| 아키텍처 결정 근거 | `docs/adr/NNNN-*.md` |
+| 도메인 제약 규칙 | `docs/constraints/domain-rules.md` |
+| 작업 의도 기록 | `docs/intents/YYYY-MM-DD-*.yaml` |
+| 에이전트 행동 원칙 | `CLAUDE.md` |
+| 실행 가능한 명세 | 테스트 코드 자체 |
+
+**ADR 표준 형식** (`docs/adr/NNNN-title.md`):
+
+```markdown
+## 상태 / 맥락 / 결정 / 결과 / 에이전트 주의사항
+```
+
+**규칙:** 문서는 거짓말하지만 테스트는 거짓말하지 않는다. 도메인 규칙은 텍스트가 아닌 통과하는 테스트로 증명한다. 에이전트는 외부 메모리나 대화 기록 없이 레포만으로 컨텍스트를 파악할 수 있어야 한다.
+
 ---
 
 ## Commands
