@@ -20,11 +20,11 @@
 | 규칙 ID | 내용 | 강제 수단 | 테스트 위치 | 상태 |
 |---|---|---|---|---|
 | **P-1** | 재고는 음수가 될 수 없다 | JUnit | `ProductTest.decreaseStock_재고_부족_예외발생` | ✅ ENFORCED |
-| **P-2** | 삭제된 상품은 조회 대상에서 제외 | JUnit | (추가 필요) | ❌ MISSING |
+| **P-2** | 삭제된 상품은 조회 대상에서 제외 | JUnit | `ProductServiceTest` | ✅ ENFORCED |
 | **P-3** | 상품 가격·재고는 0 이상 | JUnit | (추가 필요) | ❌ MISSING |
-| **O-1** | 주문 생성과 재고 차감은 원자적 | JUnit | (추가 필요) | ❌ MISSING |
+| **O-1** | 주문 생성과 재고 차감은 원자적 | JUnit | `OrderServiceTest` | ✅ ENFORCED |
 | **O-2** | 주문은 삭제하지 않는다 | (삭제 API 미존재) | DELETE /orders endpoint 없음 | ⚠️ PARTIAL |
-| **O-3** | 주문 목록 조회는 N+1 쿼리 없음 | SQL count assertion | (추가 필요) | ❌ MISSING |
+| **O-3** | 주문 목록 조회는 N+1 쿼리 없음 | SQL count assertion (통합 테스트) | (추가 필요) | ❌ MISSING |
 
 ---
 

@@ -49,6 +49,40 @@ oms/
 
 ---
 
+## Required Output 4: Feedback & Evaluation System
+
+상세 설계: `docs/feedback/system.md`
+
+**테스트 계층 및 책임:**
+
+| 계층 | 위치 | 검증 대상 | DB |
+|---|---|---|---|
+| 단위 | `src/test/.../entity/`, `.../service/` | 도메인 규칙 P·O | ❌ |
+| 통합 | `src/test/.../repository/` | 쿼리·트랜잭션·ADR | ✅ H2 |
+| E2E | `src/test/.../controller/` | API 계약·HTTP 응답 | ✅ H2 |
+| 운영 | SQL 로그 + Actuator | 실시간 이상 | ✅ MySQL |
+
+전략 문서: `tests/unit/strategy.md` · `tests/integration/strategy.md` · `tests/e2e/strategy.md`
+
+**피드백 저장소 2종:**
+
+```
+Ephemeral (세션 내):   build/reports/tests/   ← 즉각 진단용
+Persistent (세션 간):  docs/improvements/      ← 실패 패턴 누적
+                       enforcement-map.md      ← 규칙 강제 상태 추적
+                       plans/completed/        ← 작업별 게이트 기록
+```
+
+**피드백 재활용 경로:**
+- `enforcement-map ❌ MISSING` → 다음 에이전트가 테스트 추가 의무 인식
+- `docs/improvements/` → 반복 실패 패턴 사전 경고
+- `plans/completed/ iterations > 2` → Plan Agent가 복잡도 높은 영역 인식
+- 운영 버그 → 해당 테스트 계층에 케이스 추가 → enforcement-map 갱신
+
+**운영 피드백:** `observability/feedback-pipeline.md` — 신호(SQL 로그·앱 로그) → 분류 → docs/improvements/ → 하네스 개선
+
+---
+
 ## Required Output 3: Knowledge Management System
 
 단일 문서가 아닌 모듈화된 지식 구조. 상세 설계: `docs/index.md`, `docs/knowledge-graph.md`
