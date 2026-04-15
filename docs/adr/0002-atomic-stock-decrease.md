@@ -1,3 +1,18 @@
+---
+title: "ADR-0002: 재고 차감 원자성 보장"
+type: adr
+domain: product
+load_level: 2
+verified_at: "2026-04-15"
+references_code:
+  - src/main/java/com/sparta/oms/product/repository/ProductRepository.java
+related:
+  - 0001-soft-delete-for-products.md
+  - ../constraints/domain-rules.md
+supersedes: null
+superseded_by: null
+---
+
 # ADR-0002: 재고 차감 원자성 보장
 
 ## 상태

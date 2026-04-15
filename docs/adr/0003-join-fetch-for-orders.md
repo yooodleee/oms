@@ -1,3 +1,18 @@
+---
+title: "ADR-0003: 주문 조회 JOIN FETCH"
+type: adr
+domain: order
+load_level: 2
+verified_at: "2026-04-15"
+references_code:
+  - src/main/java/com/sparta/oms/order/repository/OrderRepository.java
+related:
+  - ../constraints/domain-rules.md
+  - ../../observability/logging/strategy.md
+supersedes: null
+superseded_by: null
+---
+
 # ADR-0003: 주문 조회 JOIN FETCH
 
 ## 상태

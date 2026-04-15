@@ -49,6 +49,47 @@ oms/
 
 ---
 
+## Required Output 3: Knowledge Management System
+
+단일 문서가 아닌 모듈화된 지식 구조. 상세 설계: `docs/index.md`, `docs/knowledge-graph.md`
+
+**점진적 로딩 프로토콜 — 에이전트는 필요한 레벨까지만 읽는다:**
+
+```
+L0 (항상)      CLAUDE.md, docs/index.md
+L1 (작업시작)  architecture/overview.md, 도메인 CONTEXT.md
+L2 (구현전)    domain-rules.md, enforcement-map.md, 관련 ADR
+L3 (심층)      특정 ADR 전문, improvements/*.md, security, reliability
+```
+
+**문서 메타데이터 표준** (`docs/_template.md`):
+
+```yaml
+title / type / domain / load_level / verified_at / references_code / related / supersedes / superseded_by
+```
+
+- `references_code`: 이 문서가 참조하는 실제 코드 경로 — `scripts/validate-docs.sh`가 존재 여부를 검증
+- `superseded_by`: 값이 있으면 해당 문서는 읽지 않는다 (구버전)
+
+**문서 간 연결 유형** (`docs/knowledge-graph.md`):
+
+| 유형 | 의미 |
+|---|---|
+| `→ implements` | 이 결정을 구현한 코드 위치 |
+| `→ enforces` | 이 규칙을 강제하는 수단 |
+| `→ details` | 더 자세한 내용 |
+| `→ supersedes` | 이전 결정을 대체 |
+
+**최신성 검증:** `scripts/validate-docs.sh` 실행
+- `references_code`에 선언된 코드 파일 존재 여부 확인
+- 내부 Markdown 링크 유효성 확인
+- `verified_at` 누락 문서 경고
+- `enforcement-map.md` MISSING 항목 수 보고
+
+**문서 추가 절차:** `_template.md` frontmatter 복사 → `docs/index.md` 항목 추가 → 연관 문서 `related` 업데이트 → `validate-docs.sh` 실행
+
+---
+
 ## Required Output 2: Agent Operating System
 
 에이전트가 작업을 수신·수행·검증·복구하는 완전한 운영 체계. 상세 설계: `agents/operating-system.md`

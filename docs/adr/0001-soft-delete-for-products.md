@@ -1,3 +1,19 @@
+---
+title: "ADR-0001: 상품 소프트 삭제 도입"
+type: adr
+domain: product
+load_level: 2
+verified_at: "2026-04-15"
+references_code:
+  - src/main/java/com/sparta/oms/product/entity/Product.java
+  - src/main/java/com/sparta/oms/product/repository/ProductRepository.java
+related:
+  - 0002-atomic-stock-decrease.md
+  - ../constraints/domain-rules.md
+supersedes: null
+superseded_by: null
+---
+
 # ADR-0001: 상품 소프트 삭제 도입
 
 ## 상태
