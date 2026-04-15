@@ -173,6 +173,31 @@ void <결과>_when_<조건>() { }
 - 규칙을 강제할 수 없으면 규칙을 더 작은 단위로 분해하거나, 분해도 불가능하면 규칙을 삭제한다
 - 아키텍처 규칙은 `src/test/java/com/sparta/oms/architecture/ArchitectureTest.java` (ArchUnit)으로 강제된다
 
+### Principle 7: Continuous Improvement
+
+**선언:** 문제 발생 시 코드 수정(증상 치료)만으로 완료하지 않는다. 하네스 자체가 개선되어 동일 문제가 구조적으로 재발하지 않도록 한다.
+
+**하네스 개선 트리거:**
+- **버그 탈출**: 기존 게이트(L1~L5)를 통과한 버그 발견 → 누락된 게이트 추가
+- **반복 실수**: 에이전트가 같은 유형의 실수를 두 번 이상 반복 → 구조적 차단
+- **MISSING 해소**: `enforcement-map.md`의 `❌ MISSING` 항목 → 기능 구현 시 함께 `✅ ENFORCED`로 전환
+
+**하네스 개선 루프 — 문제 발생 시 반드시 이 순서를 따른다:**
+
+1. 즉각 수정 (코드·설정 변경)
+2. 근본 원인 분석 ("어떤 레이어가 이것을 놓쳤는가?")
+3. 하네스 수정 (새 테스트 / ArchUnit 규칙 / ADR 중 하나 이상)
+4. 개선 기록 (`docs/improvements/YYYY-MM-DD-<이슈명>.md`)
+5. `enforcement-map.md` 상태 갱신
+
+**개선 기록 형식** (`docs/improvements/YYYY-MM-DD-<이슈명>.md`):
+
+```markdown
+## 발생한 문제 / 탈출 경로 분석 / 즉각 수정 / 하네스 개선 / 재발 방지 확인
+```
+
+**완료 기준:** 코드 수정만 있고 하네스 개선이 없으면 작업이 완료된 것이 아니다.
+
 ---
 
 ## Commands
