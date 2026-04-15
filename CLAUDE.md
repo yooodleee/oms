@@ -126,6 +126,27 @@ result:
       fix_applied: "<적용한 수정>"
 ```
 
+### Principle 5: AI-Friendly Structure (Legibility)
+
+**선언:** 모든 구조는 AI 에이전트가 추론 없이 탐색만으로 이해할 수 있도록 설계한다. 암묵적 관례 대신 명시적 선언을 사용한다.
+
+**Legibility 4개 레이어:**
+
+- **L1: 파일 위치가 역할을 말한다** — 각 디렉토리에 `CONTEXT.md`를 두어 패키지 목적·주의사항을 명시한다
+- **L2: 이름이 의도를 완전히 표현한다** — `updateStock()` ❌ → `decreaseStockAtomically()` ✅ / `testOrder2()` ❌ → `order_fails_when_stock_is_zero()` ✅
+- **L3: 연결이 명시적이다** — 도메인 규칙과 연관된 메서드·쿼리에 `@see docs/adr/NNNN-*.md` 참조를 추가한다
+- **L4: 예외 계층이 도메인 규칙을 반영한다** — `OmsException → ProductException → InsufficientStockException` (domain-rules P-1)
+
+**테스트 명명 기준:**
+
+```java
+@DisplayName("[규칙ID] <시나리오>는 <기대결과>를 반환한다")
+void <결과>_when_<조건>() { }
+// 예: @DisplayName("[P-1] 재고가 0일 때 주문 생성은 InsufficientStockException을 던진다")
+```
+
+**Legibility 자가 점검:** 새 에이전트가 레포를 클론했을 때 파일명·위치·이름만으로 "이것은 무엇인가?"에 답할 수 있으면 통과다.
+
 ---
 
 ## Commands
