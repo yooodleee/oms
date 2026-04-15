@@ -13,11 +13,18 @@
 | Review | 변경 검증, 원칙 준수 확인 | [roles/review-agent.md](roles/review-agent.md) |
 | Report | 결과 보고, 문서 갱신 | [roles/report-agent.md](roles/report-agent.md) |
 
+## 에이전트 운영 시스템
+
+전체 AOS 설계 (상태 머신, 수신~완료 전체): [operating-system.md](operating-system.md)
+
 ## 워크플로우
 
 | 작업 유형 | 워크플로우 |
 |---|---|
 | 신규 기능 구현 | [workflows/feature-workflow.md](workflows/feature-workflow.md) |
+| PR 생성·관리 | [workflows/pr-workflow.md](workflows/pr-workflow.md) |
+| 에이전트 리뷰 루프 | [workflows/review-loop.md](workflows/review-loop.md) |
+| 실패 복구 전략 | [workflows/retry-strategy.md](workflows/retry-strategy.md) |
 
 ## 에이전트 공통 원칙
 

@@ -49,6 +49,40 @@ oms/
 
 ---
 
+## Required Output 2: Agent Operating System
+
+에이전트가 작업을 수신·수행·검증·복구하는 완전한 운영 체계. 상세 설계: `agents/operating-system.md`
+
+**상태 머신 요약:**
+```
+RECEIVING → PLANNING → EXPLORING → IMPLEMENTING → TESTING → REVIEWING → PR_READY → COMPLETE
+                                        ↓ (실패)         ↓ (실패)      ↓ (실패)
+                                    RETRYING(최대3)   RETRYING(최대3) RETRYING(최대2)
+                                        ↓ 초과              ↓ 초과         ↓ 초과
+                                     ESCALATED           ESCALATED      ESCALATED
+```
+
+**작업 수신:** `plans/active/` intent 파일이 없으면 작업을 시작하지 않는다. goal·constraints·acceptance_criteria 필수.
+
+**컨텍스트 수집:** Explore Agent가 `git status → Glob → ./gradlew test → enforcement-map → CONTEXT.md → ADR` 순서로 탐색.
+
+**결과 검증:** `scripts/verify-gates.sh` (L1→L2→L3 순차 실행). 하나라도 실패하면 중단.
+
+**PR 관리:** `agents/workflows/pr-workflow.md` — 브랜치 명명, PR 본문 템플릿, 차단 조건.
+
+**리뷰 루프:** `agents/workflows/review-loop.md` — 7원칙 체크리스트, 최대 2사이클, 피드백 형식.
+
+**실패 복구:** `agents/workflows/retry-strategy.md` — L1/L2/Review 유형별 대응, ESCALATED 보고 형식.
+
+**에스컬레이션 조건 (인간 개입 필수):**
+- 게이트 재시도 한도 초과
+- 동일 에러 2회 연속 (접근 방식 변경 필요)
+- constraints 간 충돌
+- 외부 라이브러리 추가 필요
+- domain-rules.md 자체 변경 필요
+
+---
+
 ## Harness Engineering Principles
 
 이 프로젝트는 AI 에이전트가 자율적으로 소프트웨어를 설계·구현·테스트·검증·개선하는 **하네스 엔지니어링 시스템**을 기반으로 운영된다.
