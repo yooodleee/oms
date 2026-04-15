@@ -36,6 +36,29 @@ acceptance_criteria: # 완료 판정 기준
 out_of_scope:        # 이번 작업 범위 밖
 ```
 
+### Principle 2: Environment-Centric Design
+
+**선언:** 긴 프롬프트나 단일 지시 파일(AGENTS.md 등)에 의존하지 않는다. 환경 자체가 에이전트에게 신호를 보내도록 설계한다.
+
+**환경 레이어 구성 (분산 원칙):**
+
+| 레이어 | 구성 요소 | 역할 |
+|---|---|---|
+| 코드 구조 | `src/` 디렉토리 | 도메인 분리, 패턴을 탐색으로 파악 |
+| 설정 파일 | `settings.json`, `memory/` | 훅·퍼미션, 과거 결정 근거 |
+| 자동화 신호 | hooks, CronTrigger | 환경이 에이전트에게 먼저 신호 |
+| 실시간 상태 | `git status`, `./gradlew test` | 현재 진실(source of truth) |
+
+**에이전트 탐색 우선 프로토콜 — 작업 시작 시 아래 순서를 따른다:**
+
+1. `git status`, `git log` → 현재 변경 상태 파악
+2. `Glob("**/*.java")` → 실제 코드 구조 탐색
+3. `./gradlew test` → 현재 품질 베이스라인 확인
+4. `memory/` 파일 → 과거 결정 근거 확인
+5. 이 파일(CLAUDE.md) → 목표·제약 확인
+
+**규칙:** CLAUDE.md보다 실제 코드와 테스트 결과가 더 신뢰할 수 있는 진실이다. CLAUDE.md에는 구현 절차가 아닌 목표·제약·검증 기준만 기술한다.
+
 ---
 
 ## Commands
