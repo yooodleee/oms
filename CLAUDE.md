@@ -4,6 +4,51 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ---
 
+## Required Output 1: Repository Structure
+
+하네스 엔지니어링 시스템의 전체 레포지토리 구조. 에이전트는 이 구조를 탐색 진입점으로 사용한다.
+
+```
+oms/
+├── CLAUDE.md                          ← 하네스 원칙 (에이전트 진입점)
+├── docs/
+│   ├── architecture/overview.md       ← 시스템 구조, 레이어, 기술 스택
+│   ├── design/api-spec.md             ← API 명세
+│   ├── product/requirements.md        ← 제품 요구사항, 우선순위
+│   ├── security/security-policy.md    ← 보안 정책, 금지 행동
+│   ├── reliability/sla.md             ← SLO, 장애 등급, 롤백 기준
+│   ├── adr/                           ← 아키텍처 결정 근거
+│   ├── constraints/
+│   │   ├── domain-rules.md            ← 위반 불가 도메인 규칙
+│   │   └── enforcement-map.md         ← 규칙별 강제 상태 추적
+│   └── improvements/                  ← 하네스 개선 기록
+├── plans/
+│   ├── active/                        ← 진행 중인 intent 파일
+│   └── completed/                     ← 완료된 intent 파일 (결과 포함)
+├── agents/
+│   ├── roles/                         ← 에이전트별 책임 정의
+│   └── workflows/feature-workflow.md  ← 신규 기능 구현 절차
+├── src/
+│   ├── main/java/com/sparta/oms/
+│   │   ├── product/CONTEXT.md         ← 상품 도메인 탐색 가이드
+│   │   └── order/CONTEXT.md           ← 주문 도메인 탐색 가이드
+│   └── test/java/com/sparta/oms/
+│       └── architecture/ArchitectureTest.java  ← ARCH-1, ARCH-2 강제
+├── tests/README.md                    ← 테스트 전략, 커버리지 목표
+├── infra/
+│   └── ci/gate-pipeline.yml           ← CI 게이트 설계
+├── observability/
+│   ├── logging/strategy.md            ← 로그 레벨 기준, N+1 감지
+│   ├── metrics/strategy.md            ← 측정 지표 정의
+│   └── tracing/strategy.md            ← 트레이싱 도입 기준
+└── scripts/
+    └── verify-gates.sh                ← L1~L3 게이트 일괄 실행
+```
+
+**에이전트 탐색 우선순위:** `CLAUDE.md` → `docs/architecture/overview.md` → 해당 도메인 `CONTEXT.md` → `docs/constraints/`
+
+---
+
 ## Harness Engineering Principles
 
 이 프로젝트는 AI 에이전트가 자율적으로 소프트웨어를 설계·구현·테스트·검증·개선하는 **하네스 엔지니어링 시스템**을 기반으로 운영된다.
