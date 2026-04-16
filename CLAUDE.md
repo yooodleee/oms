@@ -27,19 +27,26 @@ oms/
 │   │   ├── architecture-boundaries.md ← ArchUnit 규칙 (ARCH-1~6)
 │   │   ├── dependency-policy.md       ← 의존성 승인 절차
 │   │   └── interface-contracts.md     ← @Valid·DTO·Repository 계약
-│   └── improvements/                  ← 하네스 개선 기록
+│   └── improvements/                  ← 지속적 개선 시스템
+│       ├── system.md                  ← 개선 루프 전체 설계 (L1)
+│       ├── quality-metrics.md         ← 품질 측정 지표 정의
+│       ├── bad-patterns.md            ← 나쁜 패턴 카탈로그 (BP-1~6)
+│       ├── tech-debt-registry.md      ← 기술 부채 추적부 (TD-1~5)
+│       └── refactoring-agent.md       ← 자동 리팩토링 에이전트 설계
 ├── plans/
 │   ├── active/                        ← 진행 중인 intent 파일
 │   └── completed/                     ← 완료된 intent 파일 (결과 포함)
 ├── agents/
 │   ├── roles/                         ← 에이전트별 책임 정의
+│   │   └── refactor-agent.md          ← 자동 리팩토링 에이전트 역할
 │   └── workflows/feature-workflow.md  ← 신규 기능 구현 절차
 ├── src/
 │   ├── main/java/com/sparta/oms/
 │   │   ├── product/CONTEXT.md         ← 상품 도메인 탐색 가이드
 │   │   └── order/CONTEXT.md           ← 주문 도메인 탐색 가이드
 │   └── test/java/com/sparta/oms/
-│       └── architecture/ArchitectureTest.java  ← ARCH-1~6 강제
+│       ├── architecture/ArchitectureTest.java  ← ARCH-1~6 강제
+│       └── quality/CodeQualityTest.java        ← CQ-1~4 품질 스멜 탐지
 ├── tests/README.md                    ← 테스트 전략, 커버리지 목표
 ├── infra/
 │   └── ci/gate-pipeline.yml           ← CI 게이트 설계
@@ -51,10 +58,47 @@ oms/
 │   └── checkstyle/checkstyle.xml      ← Checkstyle 규칙 파일
 └── scripts/
     ├── verify-gates.sh                ← L1~L3 게이트 일괄 실행
-    └── check-guardrails.sh            ← 가드레일 4계층 일괄 실행
+    ├── check-guardrails.sh            ← 가드레일 4계층 일괄 실행
+    └── assess-quality.sh              ← 코드 품질 자동 평가 (점수 산출)
 ```
 
 **에이전트 탐색 우선순위:** `CLAUDE.md` → `docs/architecture/overview.md` → 해당 도메인 `CONTEXT.md` → `docs/constraints/`
+
+---
+
+## Required Output 6: Continuous Improvement System
+
+상세 설계: `docs/improvements/system.md`
+
+**3종 탐지 메커니즘:**
+
+| 메커니즘 | 도구 | 탐지 대상 |
+|---|---|---|
+| 코드 품질 스멜 | `CodeQualityTest.java` (ArchUnit) | Entity setter, DTO 오염, 예외 계층 위반 |
+| 커버리지 측정 | JaCoCo (`./gradlew jacocoTestCoverageVerification`) | 테스트 미검증 코드 경로 |
+| 기술 부채 탐지 | `scripts/assess-quality.sh` | TODO/FIXME, 하드코딩 메시지, MISSING 항목 |
+
+**자동 리팩토링 에이전트:** `agents/roles/refactor-agent.md`
+
+```
+탐지 → 우선순위 결정 → Intent 파일 생성 → 안전 변경 → 게이트 검증 → 기록
+```
+
+자동화 가능 범위: 와일드카드 import 제거, @Transactional 추가, 에러 메시지 상수화, 테스트 추가  
+인간 승인 필요: 클래스 분리, 도메인 예외 계층 도입, 패키지 구조 변경
+
+**나쁜 패턴 카탈로그:** `docs/improvements/bad-patterns.md`
+- BP-1: Entity public setter (CQ-1 강제)
+- BP-2: God Service (TD-5, ⚠️ PARTIAL)
+- BP-3: Raw RuntimeException (CQ-3 강제)
+- BP-4: DTO-Entity 혼용 (CQ-2 강제)
+- BP-5: 하드코딩 에러 메시지 (TD-3, ⚠️ PARTIAL)
+- BP-6: @Transactional 불일치 (TD-1, ❌ MISSING)
+
+**기술 부채 추적:** `docs/improvements/tech-debt-registry.md`  
+**품질 점수 기준:** `docs/improvements/quality-metrics.md`
+
+**완료 기준 (Principle 7):** 코드 수정만 있고 하네스 개선 없으면 작업 미완료
 
 ---
 

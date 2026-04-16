@@ -3,6 +3,7 @@ plugins {
     id 'org.springframework.boot' version '4.0.4'
     id 'io.spring.dependency-management' version '1.1.7'
     id 'checkstyle'
+    id 'jacoco'
 }
 
 group = 'com.sparta'
@@ -60,4 +61,52 @@ checkstyleMain.source = fileTree('src/main/java') {
 checkstyleTest.enabled = false
 
 // 의존성 추가 시 이 목록을 갱신하고 docs/guardrails/dependency-policy.md 참조
+
+// ── 지속적 개선: JaCoCo 커버리지 측정 ────────────────────────────
+// 품질 평가 시스템 참조: docs/improvements/quality-metrics.md
+jacoco {
+    toolVersion = '0.8.11'
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true   // scripts/assess-quality.sh 파싱용
+        html.required = true  // 사람이 읽는 리포트
+    }
+    // 아키텍처 테스트·품질 테스트는 커버리지 제외 (테스트 자체를 테스트하지 않음)
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [])
+        }))
+    }
+}
+
+jacocoTestCoverageVerification {
+    dependsOn jacocoTestReport
+    violationRules {
+        // 서비스 레이어: 도메인 규칙 강제의 핵심 — 70% 최소
+        rule {
+            element = 'PACKAGE'
+            includes = ['com.sparta.oms.product.service', 'com.sparta.oms.order.service']
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.70
+            }
+        }
+        // 엔티티 레이어: 도메인 로직 — 80% 최소
+        rule {
+            element = 'PACKAGE'
+            includes = ['com.sparta.oms.product.entity', 'com.sparta.oms.order.entity']
+            limit {
+                counter = 'LINE'
+                value = 'COVEREDRATIO'
+                minimum = 0.80
+            }
+        }
+    }
+}
+
+test.finalizedBy jacocoTestReport
 // ─────────────────────────────────────────────────────────────────

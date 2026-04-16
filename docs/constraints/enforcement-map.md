@@ -57,6 +57,38 @@
 
 ---
 
+## 코드 품질 규칙 강제 현황
+
+| 규칙 ID | 내용 | 강제 수단 | 테스트 위치 | 상태 |
+|---|---|---|---|---|
+| **CQ-1** | Entity public setter 금지 | ArchUnit | `CodeQualityTest` | ✅ ENFORCED |
+| **CQ-1** | Entity가 DTO 반환 금지 | ArchUnit | `CodeQualityTest` | ✅ ENFORCED |
+| **CQ-2** | DTO에 @Entity 금지 | ArchUnit | `CodeQualityTest` | ✅ ENFORCED |
+| **CQ-2** | DTO가 Service 의존 금지 | ArchUnit | `CodeQualityTest` | ✅ ENFORCED |
+| **CQ-3** | RuntimeException 직접 throw 금지 | ArchUnit | `CodeQualityTest` | ✅ ENFORCED |
+| **CQ-4** | Repository는 repository 패키지 위치 | ArchUnit | `CodeQualityTest` | ✅ ENFORCED |
+
+## 커버리지 강제 현황
+
+| 패키지 | 최소 기준 | 강제 수단 | 상태 |
+|---|---|---|---|
+| `product.service` | 70% LINE | JaCoCo | ✅ ENFORCED |
+| `order.service` | 70% LINE | JaCoCo | ✅ ENFORCED |
+| `product.entity` | 80% LINE | JaCoCo | ✅ ENFORCED |
+| `order.entity` | 80% LINE | JaCoCo | ✅ ENFORCED |
+
+## 기술 부채 탐지 현황
+
+| ID | 내용 | 탐지 수단 | 상태 |
+|---|---|---|---|
+| **TD-1** | `ProductService.create()` @Transactional 누락 | 수동 리뷰 | ❌ MISSING |
+| **TD-2** | O-3 N+1 쿼리 SQL count assertion 미구현 | 통합 테스트 부재 | ⚠️ PARTIAL |
+| **TD-3** | 하드코딩 에러 메시지 중복 | `assess-quality.sh` | ⚠️ PARTIAL |
+| **TD-4** | IFACE-2 HTTP 상태 코드 E2E 검증 미구현 | E2E 테스트 부재 | ❌ MISSING |
+| **TD-5** | God Service 자동 탐지 미구현 | `assess-quality.sh` (미구현) | ❌ MISSING |
+
+---
+
 ## MISSING 항목 해소 기준
 
 `❌ MISSING` 상태의 규칙은 다음 중 하나를 선택해야 한다:
