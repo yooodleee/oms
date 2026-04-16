@@ -1,7 +1,15 @@
 package com.sparta.oms.product.entity;
 
-import jakarta.persistence.*;
-import lombok.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
@@ -28,7 +36,11 @@ public class Product {
     @Column
     private LocalDateTime deletedAt;
 
+    /**
+     * @see docs/constraints/domain-rules.md (P-3)
+     */
     public static Product create(String name, int price, int stock) {
+        validatePriceAndStock(price, stock);
         return Product.builder()
                 .name(name)
                 .price(price)
@@ -36,10 +48,23 @@ public class Product {
                 .build();
     }
 
+    /**
+     * @see docs/constraints/domain-rules.md (P-3)
+     */
     public void update(String name, int price, int stock) {
+        validatePriceAndStock(price, stock);
         this.name = name;
         this.price = price;
         this.stock = stock;
+    }
+
+    private static void validatePriceAndStock(int price, int stock) {
+        if (price < 0) {
+            throw new IllegalArgumentException("가격은 0 이상이어야 합니다.");
+        }
+        if (stock < 0) {
+            throw new IllegalArgumentException("재고는 0 이상이어야 합니다.");
+        }
     }
 
     public void softDelete() {

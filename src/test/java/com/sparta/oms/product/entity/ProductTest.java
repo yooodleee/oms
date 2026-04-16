@@ -1,5 +1,7 @@
 package com.sparta.oms.product.entity;
 
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,5 +55,35 @@ class ProductTest {
         assertThat(product.getName()).isEqualTo("상품B");
         assertThat(product.getPrice()).isEqualTo(2000);
         assertThat(product.getStock()).isEqualTo(20);
+    }
+
+    @Nested
+    @DisplayName("[P-3] 상품 가격·재고는 0 이상이어야 한다")
+    class PriceAndStockValidationTests {
+
+        @Test
+        @DisplayName("[P-3] 가격이 음수이면 상품 생성 시 IllegalArgumentException을 던진다")
+        void create_fails_when_price_is_negative() {
+            assertThatThrownBy(() -> Product.create("상품A", -1, 10))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("가격은 0 이상이어야 합니다.");
+        }
+
+        @Test
+        @DisplayName("[P-3] 재고가 음수이면 상품 생성 시 IllegalArgumentException을 던진다")
+        void create_fails_when_stock_is_negative() {
+            assertThatThrownBy(() -> Product.create("상품A", 1000, -1))
+                    .isInstanceOf(IllegalArgumentException.class)
+                    .hasMessage("재고는 0 이상이어야 합니다.");
+        }
+
+        @Test
+        @DisplayName("[P-3] 가격 0, 재고 0은 허용된다")
+        void create_succeeds_when_price_and_stock_are_zero() {
+            Product product = Product.create("무료상품", 0, 0);
+
+            assertThat(product.getPrice()).isEqualTo(0);
+            assertThat(product.getStock()).isEqualTo(0);
+        }
     }
 }

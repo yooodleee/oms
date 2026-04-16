@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'org.springframework.boot' version '4.0.4'
     id 'io.spring.dependency-management' version '1.1.7'
+    id 'checkstyle'
 }
 
 group = 'com.sparta'
@@ -40,3 +41,23 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
 }
+
+// ── 가드레일: Checkstyle ──────────────────────────────────────────
+// 위반 시 빌드 실패. 규칙 정의: config/checkstyle/checkstyle.xml
+// 에이전트 참조: docs/guardrails/code-style.md
+checkstyle {
+    toolVersion = '10.12.4'
+    configFile = file('config/checkstyle/checkstyle.xml')
+    ignoreFailures = false       // 위반 시 빌드 실패 (권장 사항 아님)
+    showViolations = true
+}
+
+checkstyleMain.source = fileTree('src/main/java') {
+    exclude '**/CONTEXT.md'
+}
+
+// 테스트 코드는 Checkstyle 대상에서 제외 (매직넘버·명명 규칙이 달리 적용됨)
+checkstyleTest.enabled = false
+
+// 의존성 추가 시 이 목록을 갱신하고 docs/guardrails/dependency-policy.md 참조
+// ─────────────────────────────────────────────────────────────────

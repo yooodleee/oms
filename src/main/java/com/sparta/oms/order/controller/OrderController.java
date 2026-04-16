@@ -4,12 +4,19 @@ import com.sparta.oms.order.dto.OrderListResponseDto;
 import com.sparta.oms.order.dto.OrderRequestDto;
 import com.sparta.oms.order.dto.OrderResponseDto;
 import com.sparta.oms.order.service.OrderService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/orders")
@@ -31,7 +38,7 @@ public class OrderController {
 
     // 주문 생성
     @PostMapping
-    public OrderResponseDto create(@RequestBody OrderRequestDto orderRequestDto) {
+    public OrderResponseDto create(@Valid @RequestBody OrderRequestDto orderRequestDto) {
         return orderService.create(orderRequestDto);
     }
 

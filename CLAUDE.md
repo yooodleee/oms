@@ -21,6 +21,12 @@ oms/
 │   ├── constraints/
 │   │   ├── domain-rules.md            ← 위반 불가 도메인 규칙
 │   │   └── enforcement-map.md         ← 규칙별 강제 상태 추적
+│   ├── guardrails/                    ← 제약 및 가드레일 시스템
+│   │   ├── system.md                  ← 가드레일 4계층 설계 (L0)
+│   │   ├── code-style.md              ← Checkstyle 규칙 (STYLE-1~4)
+│   │   ├── architecture-boundaries.md ← ArchUnit 규칙 (ARCH-1~6)
+│   │   ├── dependency-policy.md       ← 의존성 승인 절차
+│   │   └── interface-contracts.md     ← @Valid·DTO·Repository 계약
 │   └── improvements/                  ← 하네스 개선 기록
 ├── plans/
 │   ├── active/                        ← 진행 중인 intent 파일
@@ -33,7 +39,7 @@ oms/
 │   │   ├── product/CONTEXT.md         ← 상품 도메인 탐색 가이드
 │   │   └── order/CONTEXT.md           ← 주문 도메인 탐색 가이드
 │   └── test/java/com/sparta/oms/
-│       └── architecture/ArchitectureTest.java  ← ARCH-1, ARCH-2 강제
+│       └── architecture/ArchitectureTest.java  ← ARCH-1~6 강제
 ├── tests/README.md                    ← 테스트 전략, 커버리지 목표
 ├── infra/
 │   └── ci/gate-pipeline.yml           ← CI 게이트 설계
@@ -41,11 +47,51 @@ oms/
 │   ├── logging/strategy.md            ← 로그 레벨 기준, N+1 감지
 │   ├── metrics/strategy.md            ← 측정 지표 정의
 │   └── tracing/strategy.md            ← 트레이싱 도입 기준
+├── config/
+│   └── checkstyle/checkstyle.xml      ← Checkstyle 규칙 파일
 └── scripts/
-    └── verify-gates.sh                ← L1~L3 게이트 일괄 실행
+    ├── verify-gates.sh                ← L1~L3 게이트 일괄 실행
+    └── check-guardrails.sh            ← 가드레일 4계층 일괄 실행
 ```
 
 **에이전트 탐색 우선순위:** `CLAUDE.md` → `docs/architecture/overview.md` → 해당 도메인 `CONTEXT.md` → `docs/constraints/`
+
+---
+
+## Required Output 5: Constraints & Guardrails System
+
+상세 설계: `docs/guardrails/system.md`
+
+**가드레일 4계층:**
+
+| 계층 | 도구 | 실행 명령 | 문서 |
+|---|---|---|---|
+| 코드 스타일 | Checkstyle | `./gradlew checkstyleMain` | `docs/guardrails/code-style.md` |
+| 아키텍처 경계 | ArchUnit | `./gradlew test --tests "*.ArchitectureTest"` | `docs/guardrails/architecture-boundaries.md` |
+| 의존성 감사 | ArchUnit + 스크립트 | `scripts/check-guardrails.sh` | `docs/guardrails/dependency-policy.md` |
+| 인터페이스 계약 | @Valid + Bean Validation | 런타임 강제 | `docs/guardrails/interface-contracts.md` |
+
+**일괄 실행:** `scripts/check-guardrails.sh` — 4계층 순차 실행, 하나라도 실패 시 중단
+
+**규칙 강제 상태 (요약):**
+
+```
+STYLE-1~4   ✅ Checkstyle (config/checkstyle/checkstyle.xml)
+ARCH-1~6    ✅ ArchUnit (ArchitectureTest.java)
+P-1~P-3     ✅ JUnit (ProductTest.java) + 도메인 검증
+O-1         ✅ JUnit (OrderServiceTest.java)
+O-2         ⚠️ PARTIAL (DELETE API 미존재로 암묵적 강제)
+O-3         ⚠️ PARTIAL (JOIN FETCH 존재, SQL count 미검증)
+IFACE-1     ✅ @Valid + Bean Validation (컨트롤러·DTO)
+IFACE-2     ❌ MISSING (E2E 테스트 미구현)
+```
+
+전체 상태: `docs/constraints/enforcement-map.md`
+
+**에이전트 행동 기준:**
+- 새 기능 구현 전 `scripts/check-guardrails.sh` 실행
+- `❌ MISSING` 항목 발견 시 구현 완료 전에 강제 수단 추가
+- 가드레일 우회(suppress, ignore) 금지 — 규칙이 잘못됐다면 규칙 자체를 수정
 
 ---
 

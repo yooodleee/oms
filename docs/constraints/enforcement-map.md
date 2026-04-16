@@ -21,7 +21,7 @@
 |---|---|---|---|---|
 | **P-1** | 재고는 음수가 될 수 없다 | JUnit | `ProductTest.decreaseStock_재고_부족_예외발생` | ✅ ENFORCED |
 | **P-2** | 삭제된 상품은 조회 대상에서 제외 | JUnit | `ProductServiceTest` | ✅ ENFORCED |
-| **P-3** | 상품 가격·재고는 0 이상 | JUnit | (추가 필요) | ❌ MISSING |
+| **P-3** | 상품 가격·재고는 0 이상 | JUnit + 도메인 검증 | `ProductTest.PriceAndStockValidationTests` | ✅ ENFORCED |
 | **O-1** | 주문 생성과 재고 차감은 원자적 | JUnit | `OrderServiceTest` | ✅ ENFORCED |
 | **O-2** | 주문은 삭제하지 않는다 | (삭제 API 미존재) | DELETE /orders endpoint 없음 | ⚠️ PARTIAL |
 | **O-3** | 주문 목록 조회는 N+1 쿼리 없음 | SQL count assertion (통합 테스트) | (추가 필요) | ❌ MISSING |
@@ -34,7 +34,26 @@
 |---|---|---|---|---|
 | **ARCH-1** | Controller → Repository 직접 접근 금지 | ArchUnit | `ArchitectureTest` | ✅ ENFORCED |
 | **ARCH-2** | 레이어 의존성 방향 강제 (controller→service→repository) | ArchUnit | `ArchitectureTest` | ✅ ENFORCED |
-| **ARCH-3** | 도메인 예외는 기반 예외 클래스 상속 | ArchUnit | (추가 필요) | ❌ MISSING |
+| **ARCH-3** | 도메인 격리 (Product↔Order 크로스 금지) | ArchUnit | `ArchitectureTest` | ✅ ENFORCED |
+| **ARCH-4** | 명명 규칙 강제 (Controller·Service·DTO·Entity 위치·접미사) | ArchUnit | `ArchitectureTest` | ✅ ENFORCED |
+| **ARCH-5** | 애너테이션 계약 (@Service·@RestController 필수) | ArchUnit | `ArchitectureTest` | ✅ ENFORCED |
+| **ARCH-6** | 의존성 제한 (테스트 라이브러리·sun.* 금지) | ArchUnit | `ArchitectureTest` | ✅ ENFORCED |
+
+## 코드 스타일 규칙 강제 현황
+
+| 규칙 ID | 내용 | 강제 수단 | 상태 |
+|---|---|---|---|
+| **STYLE-1** | 와일드카드 임포트 금지 | Checkstyle | ✅ ENFORCED |
+| **STYLE-2** | 명명 규칙 (클래스·메서드·변수) | Checkstyle | ✅ ENFORCED |
+| **STYLE-3** | 빈 catch 블록 금지 | Checkstyle | ✅ ENFORCED |
+| **STYLE-4** | 문자열 == 비교 금지 | Checkstyle | ✅ ENFORCED |
+
+## 인터페이스 계약 강제 현황
+
+| 규칙 ID | 내용 | 강제 수단 | 상태 |
+|---|---|---|---|
+| **IFACE-1** | @RequestBody에 @Valid 필수 | @Valid 코드 적용 + Bean Validation | `ProductController`, `OrderController` | ✅ ENFORCED |
+| **IFACE-2** | HTTP 상태 코드 api-spec.md 일치 | E2E 테스트 (추가 필요) | ❌ MISSING |
 
 ---
 
